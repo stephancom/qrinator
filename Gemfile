@@ -2,6 +2,7 @@ source 'https://rubygems.org'
 ruby '2.5.1'
 
 gem 'foreman'
+gem 'redis'
 gem 'sinatra'
 
 gem 'rqrcode_png'

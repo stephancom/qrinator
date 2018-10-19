@@ -5,7 +5,19 @@
 # | |__| | | \ \| | | | | (_| | || (_) | |
 #  \___\_\_|  \_\_|_| |_|\__,_|\__\___/|_|
 
-require 'sinatra'
+configure :development, :test do
+  Dotenv.require_keys('BASE_URL')
+  Dotenv.load
+end
+
+configure do
+  params = {}
+  unless ENV['REDISCLOUD_URL'].nil?
+    uri = URI.parse(ENV['REDISCLOUD_URL'])
+    params = params.merge( host: uri.host, port: uri.port, password: uri.password )
+  end
+  set :redis, Redis.new(params)
+end
 
 SIZE = 384
 OFFSET = SIZE / 3
@@ -14,6 +26,9 @@ LOGO = ChunkyPNG::Image.from_file('qrlogo.png').resize(INSET, INSET)
 BASE_URL = ENV['BASE_URL']
 
 get '/*' do
+  payload = params[:splat].join
+  url = BASE_URL + '/' + payload
+
   content_type 'image/png'
   # If you prefer the image to be downloadable to included on the page
   # comment out the above content_type line and uncomment the following:
@@ -26,8 +41,16 @@ get '/*' do
   #   'Content-Disposition' => 'attachment;filename=qrcode.png',
   #   'Content-Transfer-Encoding' => 'binary'
 
-  RQRCode::QRCode.new(BASE_URL + '/' + params[:splat].join, level: :h).to_img
-                 .resize(SIZE, SIZE)
-                 .compose(LOGO, OFFSET, OFFSET)
-                 .to_blob
+  if settings.redis.exists(payload)
+    logger.info "cache hit #{payload}"
+    settings.redis.get(payload)
+  else
+    logger.info "generate uncached #{url}"
+    data = RQRCode::QRCode.new(url, level: :h).to_img
+                          .resize(SIZE, SIZE)
+                          .compose(LOGO, OFFSET, OFFSET)
+                          .to_blob
+    settings.redis.set(payload, data)
+    data
+  end
 end
