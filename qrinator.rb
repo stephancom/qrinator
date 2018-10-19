@@ -42,10 +42,8 @@ get '/*' do
   #   'Content-Transfer-Encoding' => 'binary'
 
   if settings.redis.exists(payload)
-    logger.info "cache hit #{payload}"
     settings.redis.get(payload)
   else
-    logger.info "generate uncached #{url}"
     data = RQRCode::QRCode.new(url, level: :h).to_img
                           .resize(SIZE, SIZE)
                           .compose(LOGO, OFFSET, OFFSET)
