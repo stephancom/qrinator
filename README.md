@@ -29,6 +29,11 @@ Questionmark, similarly, does the same thing, its url encoding is `%3F`
 
 ... really, you should URL encode everything, and this document should be rewritten to reflect that.  Those are the big two, though.
 
+Example
+-------
+
+![https://github.com/stephancom/qrinator](https://s3.amazonaws.com/share.stephan.com/github-stephancom-qrinator.png)
+
 Installation
 ------------
 
