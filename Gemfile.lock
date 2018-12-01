@@ -27,7 +27,7 @@ GEM
     pry-stack_explorer (0.4.9.2)
       binding_of_caller (>= 0.7)
       pry (>= 0.9.11)
-    rack (2.0.5)
+    rack (2.0.6)
     rack-protection (2.0.3)
       rack
     redis (4.0.2)
@@ -55,6 +55,7 @@ DEPENDENCIES
   pry
   pry-nav
   pry-stack_explorer
+  rack (>= 2.0.6)
   redis
   rqrcode_png
   sinatra

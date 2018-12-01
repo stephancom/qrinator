@@ -4,6 +4,7 @@ ruby '2.5.1'
 gem 'foreman'
 gem 'redis'
 gem 'sinatra'
+gem "rack", ">= 2.0.6"
 
 gem 'rqrcode_png'
 
