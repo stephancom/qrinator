@@ -36,6 +36,8 @@ class Qrinator
       redis.set(key, result)
       result
     end
+  rescue Redis::CannotConnectError
+    yield(key)
   end
 
   def raw_logo_data
@@ -86,8 +88,12 @@ class Qrinator
 
   def call(env)
     if env['REQUEST_METHOD'] == 'DELETE'
-      redis.flushall
-      [202, {}, []]
+      begin
+        redis.flushall
+        [202, {}, []]
+      rescue Redis::CannotConnectError
+        [405, {}, ['no redis']]
+      end
     else
       [200, headers, StringIO.new(qr(env['PATH_INFO']))]
     end
