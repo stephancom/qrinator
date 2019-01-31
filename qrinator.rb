@@ -5,6 +5,8 @@
 # | |__| | | \ \| | | | | (_| | || (_) | |
 #  \___\_\_|  \_\_|_| |_|\__,_|\__\___/|_|
 
+require 'net/http'
+
 configure :development, :test do
   Dotenv.require_keys('BASE_URL')
   Dotenv.load
@@ -14,7 +16,11 @@ configure do
   params = {}
   unless ENV['REDISCLOUD_URL'].nil?
     uri = URI.parse(ENV['REDISCLOUD_URL'])
-    params = params.merge( host: uri.host, port: uri.port, password: uri.password )
+    params = params.merge(
+      host: uri.host,
+      port: uri.port,
+      password: uri.password
+    )
   end
   set :redis, Redis.new(params)
 end
@@ -22,7 +28,10 @@ end
 SIZE = 384
 OFFSET = SIZE / 3
 INSET = SIZE / 3
-LOGO = ChunkyPNG::Image.from_file('qrlogo.png').resize(INSET, INSET)
+LOGO = ChunkyPNG::Image.from_blob(
+  Net::HTTP.get(URI(ENV['LOGO_URL']))
+).resize(INSET, INSET).freeze
+
 BASE_URL = ENV['BASE_URL']
 
 get '/*' do
