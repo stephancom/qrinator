@@ -8,4 +8,4 @@ Bundler.require(:default, ENV['RACK_ENV'].to_sym)
 
 require './qrinator.rb'
 
-run Sinatra::Application
+run Qrinator.new(ENV['BASE_URL'], ENV['LOGO_URL'], ENV['SIZE'])
