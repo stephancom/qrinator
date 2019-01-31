@@ -18,6 +18,8 @@ All text after the root URL is simply copied onto a destination URL, which can b
 
 By way of example, let's say you have this deployed to a heroku server at http://qrinator.stephan.com/, configured with http://stephan.com/ as the root url.  If you then call this with http://qrinator.stephan.com/blog/qrinator, you'll receive back a QR-code with the url http://stephan.com/blog/qrinator with my logo in the center.
 
+If you wish clear the redis cache, send a DELETE request to /
+
 Caveat
 ------
 

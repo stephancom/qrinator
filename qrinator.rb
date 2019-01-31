@@ -70,3 +70,9 @@ get '/*' do
                    .to_blob
   end
 end
+
+# flush cache
+delete '/' do
+  settings.redis.flushall
+  202
+end
