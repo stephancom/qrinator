@@ -10,7 +10,7 @@
 # QRinator
 > simple branded QR-codes
 
-This implements a simple standalone service in Sinatra to generate QR-codes with a logo in the center.
+This implements a simple standalone service in rack to generate QR-codes with a logo in the center.
 
 It is designed to be easily deployed to Heroku, whose free hobby plan will suffice for many uses.  Many improvements and extensions could be made, such as configuration through a UI, etc, but the intent is to keep this simple.  Feel free to fork away.
 
@@ -57,15 +57,16 @@ Deployment
 Development
 -----------
 
-* foreman start
+* dotenv start
 
 bonus: use rerun https://github.com/alexch/rerun
 * `gem install rerun`
 * install additional gems for your platform as recommended (rb-fsevent for OSX)
-* `rerun foreman start`
+* `rerun dotenv start`
 
 References
 ----------
+* https://rack.github.io
 * https://tools.ietf.org/html/rfc3986
 * https://github.com/daddz/sinatra-rspec-bundler-template/
 * https://github.com/modernistik/parse-stack-example
