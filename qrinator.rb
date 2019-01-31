@@ -12,11 +12,6 @@ configure :development, :test do
   Dotenv.load
 end
 
-SIZE = 384
-OFFSET = SIZE / 3
-INSET = SIZE / 3
-BASE_URL = ENV['BASE_URL']
-
 def redis_set_unless_exists(key)
   if settings.redis.exists(key)
     settings.redis.get(key)
@@ -39,18 +34,25 @@ configure do
   end
   set :redis, Redis.new(params)
 
+  size = ENV['SIZE'].to_i
+  size = 384 if size.zero?
+  set :size, size
+  set :offset, size / 3
+  set :inset, size / 3
+  set :base_url, ENV['BASE_URL']
+
   logo = redis_set_unless_exists(ENV['LOGO_URL']) do |url|
     Net::HTTP.get(URI(url))
   end
-  set :logo, ChunkyPNG::Image.from_blob(logo).resize(INSET, INSET)
+  set :logo, (proc { ChunkyPNG::Image.from_blob(logo).resize(inset, inset) })
 end
 
 get '/*' do
   payload = params[:splat].join
-  url = BASE_URL + '/' + payload
+  url = settings.base_url + '/' + payload
 
   content_type 'image/png'
-  # If you prefer the image to be downloadable to included on the page
+  # If you prefer the image to be downloadable vs included on the page
   # comment out the above content_type line and uncomment the following:
   #
   # headers \
@@ -63,8 +65,8 @@ get '/*' do
 
   redis_set_unless_exists(payload) do
     RQRCode::QRCode.new(url, level: :h).to_img
-                   .resize(SIZE, SIZE)
-                   .compose(settings.logo, OFFSET, OFFSET)
+                   .resize(settings.size, settings.size)
+                   .compose(settings.logo, settings.offset, settings.offset)
                    .to_blob
   end
 end

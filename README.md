@@ -14,7 +14,7 @@ This implements a simple standalone service in Sinatra to generate QR-codes with
 
 It is designed to be easily deployed to Heroku, whose free hobby plan will suffice for many uses.  Many improvements and extensions could be made, such as configuration through a UI, etc, but the intent is to keep this simple.  Feel free to fork away.
 
-All text after the root URL is simply copied onto a destination URL, which can be configured in the BASE_URL environment variable; text should be URL encoded.  The logo image is similarly configured with the LOGO_URL environment variable pointing to an url returning a png file.  This image is expected to be a PNG with an alpha channel for transparency, ideally resized to the target size.  In this case, that's 128x128 pixels, to go on top of a 384x384 QR-code (3 * 128) - this can be customized in qrinator.rb.
+All text after the root URL is simply copied onto a destination URL, which can be configured in the BASE_URL environment variable; text should be URL encoded.  The logo image is similarly configured with the LOGO_URL environment variable pointing to an url returning a png file.  This image is expected to be a PNG with an alpha channel for transparency, ideally resized to 1/3 the target size.  By default, the SIZE=384 pixels, so the image should be 128x128 pixels, to go on top of a 384x384 QR-code (3 * 128) - but if you set SIZE=192, you would want a 64x64 logo.  It'll work fine if the size is wrong, it just won't look as good.
 
 By way of example, let's say you have this deployed to a heroku server at http://qrinator.stephan.com/, configured with http://stephan.com/ as the root url.  If you then call this with http://qrinator.stephan.com/blog/qrinator, you'll receive back a QR-code with the url http://stephan.com/blog/qrinator with my logo in the center.
 
@@ -39,6 +39,7 @@ Installation
 * copy `example.env` to `.env` and configure as needed
   * BASE_URL
   * LOGO_URL
+  * SIZE (optional)
 * `bundle`
 
 Deployment
@@ -47,6 +48,7 @@ Deployment
 * heroku apps:create your-name-here
 * heroku config:set BASE_URL='http://your-url-here.com/'
 * heroku config:set LOGO_URL='http://your-url-here.com/path/to/your/logo.png'
+* heroku config:set SIZE='384'
 * heroku addons:create rediscloud:30
 * git push heroku master
 
