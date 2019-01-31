@@ -12,6 +12,21 @@ configure :development, :test do
   Dotenv.load
 end
 
+SIZE = 384
+OFFSET = SIZE / 3
+INSET = SIZE / 3
+BASE_URL = ENV['BASE_URL']
+
+def redis_set_unless_exists(key)
+  if settings.redis.exists(key)
+    settings.redis.get(key)
+  else
+    result = yield(key)
+    settings.redis.set(key, result)
+    result
+  end
+end
+
 configure do
   params = {}
   unless ENV['REDISCLOUD_URL'].nil?
@@ -23,16 +38,12 @@ configure do
     )
   end
   set :redis, Redis.new(params)
+
+  logo = redis_set_unless_exists(ENV['LOGO_URL']) do |url|
+    Net::HTTP.get(URI(url))
+  end
+  set :logo, ChunkyPNG::Image.from_blob(logo).resize(INSET, INSET)
 end
-
-SIZE = 384
-OFFSET = SIZE / 3
-INSET = SIZE / 3
-LOGO = ChunkyPNG::Image.from_blob(
-  Net::HTTP.get(URI(ENV['LOGO_URL']))
-).resize(INSET, INSET).freeze
-
-BASE_URL = ENV['BASE_URL']
 
 get '/*' do
   payload = params[:splat].join
@@ -50,14 +61,10 @@ get '/*' do
   #   'Content-Disposition' => 'attachment;filename=qrcode.png',
   #   'Content-Transfer-Encoding' => 'binary'
 
-  if settings.redis.exists(payload)
-    settings.redis.get(payload)
-  else
-    data = RQRCode::QRCode.new(url, level: :h).to_img
-                          .resize(SIZE, SIZE)
-                          .compose(LOGO, OFFSET, OFFSET)
-                          .to_blob
-    settings.redis.set(payload, data)
-    data
+  redis_set_unless_exists(payload) do
+    RQRCode::QRCode.new(url, level: :h).to_img
+                   .resize(SIZE, SIZE)
+                   .compose(settings.logo, OFFSET, OFFSET)
+                   .to_blob
   end
 end
