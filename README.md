@@ -62,7 +62,7 @@ Development
 bonus: use rerun https://github.com/alexch/rerun
 * `gem install rerun`
 * install additional gems for your platform as recommended (rb-fsevent for OSX)
-* `rerun dotenv start`
+* `rerun dotenv config.ru`
 
 References
 ----------
