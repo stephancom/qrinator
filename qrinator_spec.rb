@@ -54,7 +54,6 @@ describe 'Qrinator' do
       it { is_expected.to match(a_hash_including('Pragma' => 'public')) }
       it { is_expected.to match(a_hash_including('Expires' => '0')) }
       it { is_expected.to match(a_hash_including('Cache-Control' => 'must-revalidate, post-check=0, pre-check=0')) }
-      it { is_expected.to match(a_hash_including('Content-Type' => 'application/octet-stream')) }
       it { is_expected.to match(a_hash_including('Content-Disposition' => 'attachment;filename=qrcode.png')) }
       it { is_expected.to match(a_hash_including('Content-Transfer-Encoding' => 'binary')) }
     end
