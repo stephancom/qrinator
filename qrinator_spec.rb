@@ -96,14 +96,145 @@ describe 'Qrinator' do
       expect(response.headers).to match(a_hash_including('Content-Type' => 'image/png'))
     end
 
-    pending 'redis'
+    describe 'QR generation' do
+      let(:path) { '/some/desired/path.html' }
+      let(:png) { double('A Png') }
+      let(:qrcoder) { double('A qr-coder', to_img: png) }
+      let(:payload) { base_url + path }
+      let(:png_blob) { 'the_binary_png_data' }
+      before do
+        allow(qrinator).to receive(:logo).and_return('the_logo')
+        allow(png).to receive(:resize).and_return(png)
+        allow(png).to receive(:compose).and_return(png)
+        allow(png).to receive(:to_blob).and_return(png_blob)
+        allow(RQRCode::QRCode).to receive(:new).and_return(qrcoder)
+      end
+
+      it 'generates with the full desired url' do
+        expect(RQRCode::QRCode).to receive(:new).with(payload, a_hash_including).and_return(qrcoder)
+        server.get(path)
+      end
+
+      it 'converts the QR to png' do
+        expect(qrcoder).to receive(:to_img).and_return(png)
+        server.get(path)
+      end
+
+      it 'resizes the image' do
+        expect(png).to receive(:resize).with(size, size).and_return(png)
+        server.get(path)
+      end
+
+      it 'gets the logo' do
+        expect(qrinator).to receive(:logo).and_return('the_logo')
+        server.get(path)
+      end
+
+      it 'composites the logo' do
+        expect(png).to receive(:compose).with('the_logo', size / 3, size / 3).and_return(png)
+        server.get(path)
+      end
+
+      it 'converts the composed QR code to a blob for return' do
+        expect(png).to receive(:to_blob).and_return('png_image')
+        server.get(path)
+      end
+
+      it 'returns the composed QR code in the body' do
+        response = server.get(path)
+        expect(response.body).to eq(png_blob)
+      end
+
+      describe 'with redis' do
+        let(:redis) { MockRedis.new }
+        before do
+          allow(qrinator).to receive(:redis).and_return(redis)
+        end
+
+        it 'should check the cache' do
+          expect(redis).to receive(:exists).with(path).and_call_original
+          server.get(path)
+        end
+
+        describe 'when not cached' do
+          before do
+            allow(redis).to receive(:exists).with(path).and_return(false)
+          end
+
+          it 'generates with the full desired url' do
+            expect(RQRCode::QRCode).to receive(:new).with(payload, a_hash_including).and_return(qrcoder)
+            server.get(path)
+          end
+
+          it 'stores the result in the cache' do
+            expect(redis).to receive(:set).with(path, png_blob)
+            server.get(path)
+          end
+
+          it 'returns the composed QR code in the body' do
+            response = server.get(path)
+            expect(response.body).to eq(png_blob)
+          end
+        end
+
+        describe 'when cached' do
+          before do
+            allow(redis).to receive(:exists).with(path).and_return(true)
+            allow(redis).to receive(:get).with(path).and_return(png_blob)
+          end
+
+          it 'does not generate a qrcode' do
+            expect(RQRCode::QRCode).not_to receive(:new)
+            server.get(path)
+          end
+
+          it 'fetches the result in the cache' do
+            expect(redis).to receive(:get).with(path).and_return(png_blob)
+            server.get(path)
+          end
+
+          it 'returns the cached image in the body' do
+            allow(redis).to receive(:get).with(path).and_return('cached qr code')
+            response = server.get(path)
+            expect(response.body).to eq('cached qr code')
+          end
+        end
+      end
+    end
+
+    pending 'logo'
   end
 
   describe 'DELETE /*' do
-    pending 'with redis'
+    describe 'with redis' do
+      let(:redis) { MockRedis.new }
+      before do
+        allow(qrinator).to receive(:redis).and_return(redis)
+      end
+
+      it 'should flush the cache' do
+        expect(redis).to receive(:flushall)
+        response = server.delete('/')
+      end
+
+      it 'returns an empty body' do
+        response = server.delete('/')
+        expect(response.body).to be_empty
+      end
+
+      it 'returns no headers' do
+        response = server.delete('/')
+        expect(response.headers).to be_empty
+      end
+
+      it 'returns status Accepted' do
+        response = server.delete('/')
+        expect(response.status).to eq 202
+      end
+    end
 
     describe 'without redis' do
-      it 'should return a 405 code' do
+      it 'returns status Method Not Allowed' do
         response = server.delete('/')
         expect(response.status).to eq 405
       end
