@@ -32,6 +32,12 @@ describe 'Qrinator' do
         expect(qrinator.url('stephancom/qrinator')).to eq 'https://github.com/stephancom/qrinator'
       end
 
+      it 'should handle url encoding' do
+        decoded = 'https://github.com/search?q=qrinator&ref=simplesearch#extrastuff'
+        encoded = 'search%3Fq%3Dqrinator%26ref%3Dsimplesearch%23extrastuff'
+        expect(qrinator.url(encoded)).to eq(decoded)
+      end
+
       describe 'with / at end of base_url' do
         let(:base_url) { 'https://github.com/' }
 
@@ -65,9 +71,7 @@ describe 'Qrinator' do
       end
 
       it 'should parse the url' do
-        expect(qrinator.redis_params).to match(a_hash_including(host: 'some.redislabs.url.example.com',
-                                                                password: 'somerandomkey',
-                                                                port: 8008))
+        expect(qrinator.redis_params).to match(a_hash_including(host: 'some.redislabs.url.example.com', password: 'somerandomkey', port: 8008))
       end
     end
   end
@@ -112,18 +116,9 @@ describe 'Qrinator' do
         server.get(path)
       end
 
-      it 'gets the logo' do
-        expect(qrinator).to receive(:logo).and_return('the_logo')
-        server.get(path)
-      end
-
       it 'composites the logo' do
+        expect(qrinator).to receive(:logo).and_return('the_logo')
         expect(png).to receive(:compose).with('the_logo', size / 3, size / 3).and_return(png)
-        server.get(path)
-      end
-
-      it 'converts the composed QR code to a blob for return' do
-        expect(png).to receive(:to_blob).and_return('png_image')
         server.get(path)
       end
 
@@ -209,13 +204,8 @@ describe 'Qrinator' do
         expect(qrinator.logo).to be logo_png
       end
 
-      it 'resizes the logo' do
-        expect(logo_png).to receive(:resize).with(size / 3, size / 3).and_return(logo_png)
-        qrinator.logo
-      end
-
       it 'returns the resized logo' do
-        allow(logo_png).to receive(:resize).and_return('resized_logo')
+        expect(logo_png).to receive(:resize).with(size / 3, size / 3).and_return('resized_logo')
         expect(qrinator.logo).to eq 'resized_logo'
       end
 
@@ -278,13 +268,9 @@ describe 'Qrinator' do
         server.delete('/')
       end
 
-      it 'returns an empty body' do
+      it 'returns an empty body and no headers' do
         response = server.delete('/')
         expect(response.body).to be_empty
-      end
-
-      it 'returns no headers' do
-        response = server.delete('/')
         expect(response.headers).to be_empty
       end
 

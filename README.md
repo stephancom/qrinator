@@ -29,6 +29,8 @@ For example, given the above configuration, if you wish the QR code the point to
 
 Questionmark, similarly, does the same thing, its url encoding is `%3F`
 
+There is a known issue around non-ascii characters in URLs.
+
 Downloads?
 ----------
 

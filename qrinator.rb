@@ -73,7 +73,7 @@ class Qrinator
   end
 
   def url(payload)
-    URI.join(@base_url, payload).to_s
+    URI.join(@base_url, CGI.unescape(payload)).to_s
   end
 
   def qr(payload)
