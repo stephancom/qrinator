@@ -1,12 +1,11 @@
+require 'net/http'
+
 #   ____  _____  _             _
 #  / __ \|  __ \(_)        by | | stephan.com
 # | |  | | |__) |_ _ __   __ _| |_ ___  _ __
 # | |  | |  _  /| | '_ \ / _` | __/ _ \| '__|
 # | |__| | | \ \| | | | | (_| | || (_) | |
 #  \___\_\_|  \_\_|_| |_|\__,_|\__\___/|_|
-
-require 'net/http'
-
 class Qrinator
   attr_reader :size
   def initialize(base_url, logo_url, size)

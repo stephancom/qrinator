@@ -1,39 +1,9 @@
-Lint/AmbiguousBlockAssociation:
-  Exclude:
-    - "spec/**/*"
-
 Metrics/LineLength:
-  Max: 160
-
-Metrics/AbcSize:
-  Max: 30
+  Max: 120
 
 Metrics/BlockLength:
   Exclude:
-    - '*.gemspec'
-    - 'Rakefile'
-    - '**/*.rake'
-    - 'test/**/*_test.rb'
-    - 'spec/**/*_spec.rb'
-    - 'spec/**/*_context.rb'
-  ExcludedMethods:
-    - resource
-    - params
-    - requires
-    - route_param
-
-Style/BlockDelimiters:
-  EnforcedStyle: semantic
-  FunctionalMethods:
-    - before
-    - let
-    - let!
-    - subject
-    - watch
-    - expect
-    - uniq
-    - git_source
-    - its
+    - '*_spec.rb'
 
 Style/FrozenStringLiteralComment:
   Enabled: false

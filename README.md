@@ -7,7 +7,7 @@
  \___\_\_|  \_\_|_| |_|\__,_|\__\___/|_|   
 </pre>
 
-# QRinator
+# QRinator [![Build Status](https://travis-ci.org/stephancom/qrinator.svg?branch=master)](https://travis-ci.org/stephancom/qrinator) [![Maintainability](https://api.codeclimate.com/v1/badges/a9fb9cae21beb6650c4f/maintainability)](https://codeclimate.com/github/stephancom/qrinator/maintainability) [![Test Coverage](https://api.codeclimate.com/v1/badges/a9fb9cae21beb6650c4f/test_coverage)](https://codeclimate.com/github/stephancom/qrinator/test_coverage) [![Deploy to Heroku](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy)
 > simple branded QR-codes
 
 This implements a simple standalone service in rack to generate QR-codes with a logo in the center.
