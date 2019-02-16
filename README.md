@@ -29,6 +29,11 @@ For example, given the above configuration, if you wish the QR code the point to
 
 Questionmark, similarly, does the same thing, its url encoding is `%3F`
 
+Downloads?
+----------
+
+If you prefer your image to be delivered as a download, rather than inline, replace `headers` with `download_headers` at the end of call.  _(experimental)_
+
 Example
 -------
 
@@ -63,6 +68,9 @@ bonus: use rerun https://github.com/alexch/rerun
 * `gem install rerun`
 * install additional gems for your platform as recommended (rb-fsevent for OSX)
 * `rerun dotenv config.ru`
+
+testing:
+* rspec ./qrinator_spec.rb
 
 References
 ----------

@@ -50,12 +50,63 @@ describe 'Qrinator' do
         end
       end
     end
+
+    # note: these are unused by default, but can be easily enabled
+    # this is a bit cargo-cult, these may not all be needed
+    describe 'download headers' do
+      subject(:headers) { qrinator.download_headers }
+
+      it { is_expected.to match(a_hash_including('Content-Type' => 'application/octet-stream')) }
+      it { is_expected.to match(a_hash_including('Pragma' => 'public')) }
+      it { is_expected.to match(a_hash_including('Expires' => '0')) }
+      it { is_expected.to match(a_hash_including('Cache-Control' => 'must-revalidate, post-check=0, pre-check=0')) }
+      it { is_expected.to match(a_hash_including('Content-Type' => 'application/octet-stream')) }
+      it { is_expected.to match(a_hash_including('Content-Disposition' => 'attachment;filename=qrcode.png')) }
+      it { is_expected.to match(a_hash_including('Content-Transfer-Encoding' => 'binary')) }
+    end
+
+    describe 'redis_params' do
+      let(:rediscloud_url) { 'redis://rediscloud:somerandomkey@some.redislabs.url.example.com:58008' }
+      before do
+        ENV['REDISCLOUD_URL'] = rediscloud_url
+      end
+
+      it 'should parse the host' do
+        expect(qrinator.redis_params).to match(a_hash_including(host: 'some.redislabs.url.example.com'))
+      end
+
+      it 'should parse the port' do
+        expect(qrinator.redis_params).to match(a_hash_including(port: 58008))
+      end
+
+      it 'should parse the password' do
+        expect(qrinator.redis_params).to match(a_hash_including(password: 'somerandomkey'))
+      end
+    end
   end
 
-  context 'GET /*' do
+  describe 'GET /*' do
     it 'should return a 200 code' do
       response = server.get('/')
-      expect(response.status).to be 200
+      expect(response.status).to eq 200
+    end
+
+    it 'should return the right content-type' do
+      response = server.get('/')
+      expect(response.headers).to match(a_hash_including('Content-Type' => 'image/png'))
+    end
+
+    pending 'redis'
+  end
+
+  describe 'DELETE /*' do
+    pending 'with redis'
+
+    describe 'without redis' do
+      it 'should return a 405 code' do
+        response = server.delete('/')
+        expect(response.status).to eq 405
+      end
     end
   end
 end
