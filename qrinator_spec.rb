@@ -1,5 +1,3 @@
-require_relative 'spec_helper'
-
 describe 'Qrinator' do
   let(:base_url) { 'https://github.com' }
   let(:logo_url) { 'https://github.githubassets.com/images/modules/logos_page/Octocat.png' }
