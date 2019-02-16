@@ -14,6 +14,6 @@ before_script:
   - chmod +x ./cc-test-reporter
   - ./cc-test-reporter before-build
 scripts:
-  - bundle exec rspec spec qrinator_spec.rb
+  - bundle exec rspec qrinator_spec.rb
 after_script:
   - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
