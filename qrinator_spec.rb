@@ -60,21 +60,15 @@ describe 'Qrinator' do
     end
 
     describe 'redis_params' do
-      let(:rediscloud_url) { 'redis://rediscloud:somerandomkey@some.redislabs.url.example.com:58008' }
+      let(:rediscloud_url) { 'redis://rediscloud:somerandomkey@some.redislabs.url.example.com:8008' }
       before do
         ENV['REDISCLOUD_URL'] = rediscloud_url
       end
 
-      it 'should parse the host' do
-        expect(qrinator.redis_params).to match(a_hash_including(host: 'some.redislabs.url.example.com'))
-      end
-
-      it 'should parse the port' do
-        expect(qrinator.redis_params).to match(a_hash_including(port: 58_008))
-      end
-
-      it 'should parse the password' do
-        expect(qrinator.redis_params).to match(a_hash_including(password: 'somerandomkey'))
+      it 'should parse the url' do
+        expect(qrinator.redis_params).to match(a_hash_including(host: 'some.redislabs.url.example.com',
+                                                                password: 'somerandomkey',
+                                                                port: 8008))
       end
     end
   end
