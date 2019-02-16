@@ -12,6 +12,7 @@ end
 
 group :test do
   gem 'mock_redis', '~> 0.19.0'
+  gem 'rake', '~> 12.3.0'
   gem 'rspec', '~> 3.8.0'
   gem 'simplecov', '~> 0.16.0', require: false
   gem 'vcr', '~> 4.0.0'
