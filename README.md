@@ -80,3 +80,10 @@ References
 * https://tools.ietf.org/html/rfc3986
 * https://github.com/daddz/sinatra-rspec-bundler-template/
 * https://github.com/modernistik/parse-stack-example
+
+Just For Fun
+------------
+
+Scan this code to deploy on Heroku!
+
+![https://heroku.com/deploy?template=https://github.com/stephancom/qrinator](https://s3.amazonaws.com/share.stephan.com/qrinator/deploy-qrinator.png)
