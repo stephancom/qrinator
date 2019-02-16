@@ -70,7 +70,7 @@ DEPENDENCIES
   dotenv (~> 2.5.0)
   mock_redis (~> 0.19.0)
   rack (~> 2.0.0)
-  rake
+  rake (~> 12.3.0)
   redis (~> 4.0.0)
   rqrcode_png (~> 0.1.0)
   rspec (~> 3.8.0)
