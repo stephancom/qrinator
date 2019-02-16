@@ -5,8 +5,12 @@ require 'rubygems' unless defined?(Gem)
 require 'bundler/setup'
 Bundler.require(:default, :test)
 
-require 'rspec'
-require 'rack'
+require 'webmock/rspec'
+VCR.configure do |config|
+  config.cassette_library_dir = 'vcr_cassettes'
+  config.hook_into :webmock
+end
+
 require_relative 'qrinator'
 
 describe 'Qrinator' do
@@ -15,6 +19,11 @@ describe 'Qrinator' do
   let(:size) { 384 }
   let(:qrinator) { Qrinator.new(base_url, logo_url, size) }
   let(:server) { Rack::MockRequest.new(qrinator) }
+  around(:each) do |example|
+    VCR.use_cassette('octocat') do
+      example.run
+    end
+  end
 
   describe 'internals' do
     it 'should have offset size/3' do
@@ -76,7 +85,7 @@ describe 'Qrinator' do
       end
 
       it 'should parse the port' do
-        expect(qrinator.redis_params).to match(a_hash_including(port: 58008))
+        expect(qrinator.redis_params).to match(a_hash_including(port: 58_008))
       end
 
       it 'should parse the password' do
@@ -196,13 +205,87 @@ describe 'Qrinator' do
           it 'returns the cached image in the body' do
             allow(redis).to receive(:get).with(path).and_return('cached qr code')
             response = server.get(path)
-            expect(response.body).to eq('cached qr code')
+            expect(response.body).to eq 'cached qr code'
           end
         end
       end
     end
 
-    pending 'logo'
+    describe 'logo' do
+      let(:logo_blob) { 'logo_png' }
+      let!(:stub_get) { stub_request(:get, logo_url).to_return(body: logo_blob) }
+      let(:logo_png) { double('The Logo PNG') }
+
+      before do
+        allow(logo_png).to receive(:resize).and_return(logo_png)
+        allow(ChunkyPNG::Image).to receive(:from_blob).and_return(logo_png)
+      end
+
+      it 'reads the logo from the internet' do
+        qrinator.raw_logo_data
+        assert_requested(stub_get)
+      end
+
+      it 'converts the raw data to a png' do
+        expect(ChunkyPNG::Image).to receive(:from_blob).with(logo_blob).and_return(logo_png)
+        expect(qrinator.logo).to be logo_png
+      end
+
+      it 'resizes the logo' do
+        expect(logo_png).to receive(:resize).with(size / 3, size / 3).and_return(logo_png)
+        qrinator.logo
+      end
+
+      it 'returns the resized logo' do
+        allow(logo_png).to receive(:resize).and_return('resized_logo')
+        expect(qrinator.logo).to eq 'resized_logo'
+      end
+
+      describe 'with redis' do
+        let(:redis) { MockRedis.new }
+        before do
+          allow(qrinator).to receive(:redis).and_return(redis)
+        end
+
+        describe 'when not cached' do
+          before do
+            allow(redis).to receive(:exists).with(logo_url).and_return(false)
+          end
+
+          it 'reads the logo from the internet' do
+            qrinator.raw_logo_data
+            assert_requested(stub_get)
+          end
+
+          it 'stores the result in the cache' do
+            expect(redis).to receive(:set).with(logo_url, logo_blob)
+            qrinator.raw_logo_data
+          end
+        end
+
+        describe 'when cached' do
+          before do
+            allow(redis).to receive(:exists).with(logo_url).and_return(true)
+            allow(redis).to receive(:get).with(logo_url).and_return(logo_blob)
+          end
+
+          it 'does not read the logo from the internet' do
+            qrinator.raw_logo_data
+            assert_not_requested(stub_get)
+          end
+
+          it 'fetches the result in the cache' do
+            expect(redis).to receive(:get).with(logo_url).and_return(logo_blob)
+            qrinator.raw_logo_data
+          end
+
+          it 'uses the cached logo' do
+            allow(redis).to receive(:get).with(logo_url).and_return('cached_logo')
+            expect(qrinator.raw_logo_data).to eq 'cached_logo'
+          end
+        end
+      end
+    end
   end
 
   describe 'DELETE /*' do
@@ -214,7 +297,7 @@ describe 'Qrinator' do
 
       it 'should flush the cache' do
         expect(redis).to receive(:flushall)
-        response = server.delete('/')
+        server.delete('/')
       end
 
       it 'returns an empty body' do
