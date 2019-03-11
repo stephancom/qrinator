@@ -25,7 +25,7 @@ Caveat
 
 The fragment identifier (aka hash symbol or octothorpe `#`) and everything after it is not passed to the server, per [RFC 3986](https://tools.ietf.org/html/rfc3986).  For this reason, if you wish to use it in a QR code, eg to deep-link to something handled by a front-end framework, replace it with the url encoding `%23`.
 
-For example, given the above configuration, if you wish the QR code the point to `http://stephan.com/software#examples`, you might generate that with `http://qrinator.stephan.com/software%23examples`
+For example, given the above configuration, if you wish the QR code to point to `http://stephan.com/software#examples`, you might generate that with `http://qrinator.stephan.com/software%23examples`
 
 Questionmark, similarly, does the same thing, its url encoding is `%3F`
 
