@@ -41,6 +41,8 @@ GEM
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.8.0)
     rspec-support (3.8.0)
+    rspec_junit_formatter (0.4.1)
+      rspec-core (>= 2, < 4, != 2.12.0)
     rubocop (0.64.0)
       jaro_winkler (~> 1.5.1)
       parallel (~> 1.10)
@@ -74,6 +76,7 @@ DEPENDENCIES
   redis (~> 4.0.0)
   rqrcode_png (~> 0.1.0)
   rspec (~> 3.8.0)
+  rspec_junit_formatter (~> 0.4.1)
   rubocop (~> 0.64.0)
   simplecov (~> 0.16.0)
   vcr (~> 4.0.0)
@@ -83,4 +86,4 @@ RUBY VERSION
    ruby 2.5.1p57
 
 BUNDLED WITH
-   1.16.3
+   1.16.6
