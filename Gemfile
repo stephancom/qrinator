@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 ruby '2.5.1'
 
-gem 'rack', '~> 2.0.0'
+gem 'rack', '~> 2.0.8'
 gem 'redis', '~> 4.0.0'
 gem 'rqrcode_png', '~> 0.1.0'
 
