@@ -1,4 +1,4 @@
-# typed: false
+# typed: true
 require 'net/http'
 
 #   ____  _____  _             _
@@ -20,7 +20,7 @@ class Qrinator
   def redis_params
     return {} if ENV['REDISCLOUD_URL'].nil?
 
-    uri = URI.parse(ENV['REDISCLOUD_URL'])
+    uri = URI.parse(T.must(ENV['REDISCLOUD_URL']))
     { host: uri.host, port: uri.port, password: uri.password }
   end
 
