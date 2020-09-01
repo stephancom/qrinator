@@ -22,7 +22,7 @@ class Qrinator
     @inset = T.let(@size / 3, Integer)
   end
 
-  sig {returns(T::Hash[Symbol, T.untyped])}
+  sig {returns(T::Hash[Symbol, String])}
   def redis_params
     return {} if ENV['REDISCLOUD_URL'].nil?
 
@@ -35,7 +35,7 @@ class Qrinator
     @redis ||= T.let(Redis.new(redis_params), T.nilable(Redis))
   end
 
-  sig {params(key: String, blk: T.proc.params(k: String).returns(T.untyped)).returns(String)}
+  sig {params(key: String, blk: T.proc.params(k: String).returns(String)).returns(String)}
   def redis_set_unless_exists(key, &blk)
     if T.must(redis).exists(key)
       T.must(redis).get(key)
@@ -67,7 +67,7 @@ class Qrinator
     }
   end
 
-  sig {returns(T::Hash[T.untyped, T.untyped])}
+  sig {returns(T::Hash[String, String])}
   def headers
     { 'Content-Type' => 'image/png' }
   end
@@ -102,7 +102,7 @@ class Qrinator
     end
   end
 
-  sig {params(env: T.untyped).returns(T::Array[T.untyped])}
+  sig {params(env: T::Hash[String, String]).returns([Integer, T::Hash[String, String], T.any(StringIO, T::Array[String])])}
   def call(env)
     if env['REQUEST_METHOD'] == 'DELETE'
       begin
@@ -112,7 +112,7 @@ class Qrinator
         [405, {}, ['no redis']]
       end
     else
-      [200, headers, StringIO.new(qr(env['PATH_INFO']))]
+      [200, headers, StringIO.new(qr(T.must(env['PATH_INFO'])))]
     end
   end
 end
