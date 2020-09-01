@@ -281,6 +281,10 @@ describe 'Qrinator' do
     end
 
     describe 'without redis' do
+      before do
+        allow(Redis).to receive(:new).and_raise(Redis::CannotConnectError)
+      end
+
       it 'returns status Method Not Allowed' do
         response = server.delete('/')
         expect(response.status).to eq 405
