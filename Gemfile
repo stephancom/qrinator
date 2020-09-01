@@ -5,6 +5,11 @@ gem 'bundler', '~> 2.1.4'
 gem 'rack', '~> 2.1.4'
 gem 'redis', '~> 4.0.0'
 gem 'rqrcode_png', '~> 0.1.0'
+gem 'sorbet-runtime', '~> 0.5.0'
+
+group :development do
+  gem 'sorbet', '~> 0.5.0'
+end
 
 group :development, :test do
   gem 'dotenv', '~> 2.5.0'
