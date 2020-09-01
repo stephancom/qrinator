@@ -82,9 +82,9 @@ class Qrinator
     @size / 3
   end
 
-  sig {returns(T.nilable(String))}
+  sig {returns(T.nilable(ChunkyPNG::Image))}
   def logo
-    @logo ||= T.let(ChunkyPNG::Image.from_blob(raw_logo_data).resize(inset, inset), T.nilable(String))
+    @logo ||= T.let(ChunkyPNG::Image.from_blob(raw_logo_data).resize(inset, inset), T.nilable(ChunkyPNG::Image))
   end
 
   sig {params(payload: String).returns(String)}
