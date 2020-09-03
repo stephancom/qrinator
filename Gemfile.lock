@@ -40,6 +40,9 @@ GEM
     rspec-mocks (3.8.0)
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.8.0)
+    rspec-sorbet (1.5.0)
+      sorbet
+      sorbet-runtime
     rspec-support (3.8.0)
     rspec_junit_formatter (0.4.1)
       rspec-core (>= 2, < 4, != 2.12.0)
@@ -81,6 +84,7 @@ DEPENDENCIES
   redis (~> 4.0.0)
   rqrcode_png (~> 0.1.0)
   rspec (~> 3.8.0)
+  rspec-sorbet
   rspec_junit_formatter (~> 0.4.1)
   rubocop (~> 0.64.0)
   simplecov (~> 0.16.0)

@@ -22,6 +22,7 @@ group :test do
   gem 'rspec', '~> 3.8.0'
   gem 'rspec_junit_formatter', '~> 0.4.1'
   gem 'simplecov', '~> 0.16.0', require: false
+  gem 'rspec-sorbet'
   gem 'vcr', '~> 4.0.0'
   gem 'webmock', '~> 3.5.0'
 end

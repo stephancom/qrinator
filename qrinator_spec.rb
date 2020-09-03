@@ -90,8 +90,8 @@ describe 'Qrinator' do
 
     describe 'QR generation' do
       let(:path) { '/some/desired/path.html' }
-      let(:png) { double('A Png') }
-      let(:qrcoder) { double('A qr-coder', to_img: png) }
+      let(:png) { instance_double('ChunkyPNG::Image') }
+      let(:qrcoder) { instance_double('RQRCode::QRCode', to_img: png) }
       let(:payload) { base_url + path }
       let(:png_blob) { 'the_binary_png_data' }
       before do
@@ -188,7 +188,7 @@ describe 'Qrinator' do
     describe 'logo' do
       let(:logo_blob) { 'logo_png' }
       let!(:stub_get) { stub_request(:get, logo_url).to_return(body: logo_blob) }
-      let(:logo_png) { double('The Logo PNG') }
+      let(:logo_png) { instance_double('ChunkyPNG::Image') }
 
       before do
         allow(logo_png).to receive(:resize).and_return(logo_png)
@@ -206,8 +206,9 @@ describe 'Qrinator' do
       end
 
       it 'returns the resized logo' do
-        expect(logo_png).to receive(:resize).with(size / 3, size / 3).and_return('resized_logo')
-        expect(qrinator.logo).to eq 'resized_logo'
+        resized_logo = instance_double('ChunkyPNG::Image')
+        expect(logo_png).to receive(:resize).with(size / 3, size / 3).and_return(resized_logo)
+        expect(qrinator.logo).to eq resized_logo
       end
 
       describe 'with redis' do
