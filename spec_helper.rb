@@ -1,5 +1,9 @@
+# typed: strict
 require 'simplecov'
 SimpleCov.start
+
+require 'rspec/sorbet'
+RSpec::Sorbet.allow_doubles!
 
 require 'rubygems' unless defined?(Gem)
 require 'bundler/setup'
