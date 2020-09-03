@@ -1,6 +1,7 @@
 source 'https://rubygems.org'
-ruby '2.5.1'
+ruby '2.7.1'
 
+gem 'bundler', '~> 2.1.4'
 gem 'rack', '~> 2.1.4'
 gem 'redis', '~> 4.0.0'
 gem 'rqrcode_png', '~> 0.1.0'
