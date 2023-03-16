@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 ruby '2.7.1'
 
 gem 'bundler', '~> 2.1.4'
-gem 'rack', '~> 2.1.4'
+gem 'rack', '~> 2.2.6'
 gem 'redis', '~> 4.0.0'
 gem 'rqrcode_png', '~> 0.1.0'
 gem 'sorbet-runtime', '~> 0.5.0'
