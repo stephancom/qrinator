@@ -1,5 +1,6 @@
 # typed: strict
 require 'net/http'
+require_relative 'rqrcode_dark_patch'
 
 #   ____  _____  _             _
 #  / __ \|  __ \(_)        by | | stephan.com
