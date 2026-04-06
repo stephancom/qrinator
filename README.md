@@ -10,6 +10,8 @@
 # QRinator [![CircleCI](https://circleci.com/gh/stephancom/qrinator.svg?style=svg)](https://circleci.com/gh/stephancom/qrinator) [![Build Status](https://travis-ci.org/stephancom/qrinator.svg?branch=master)](https://travis-ci.org/stephancom/qrinator) [![Maintainability](https://api.codeclimate.com/v1/badges/a9fb9cae21beb6650c4f/maintainability)](https://codeclimate.com/github/stephancom/qrinator/maintainability) [![Test Coverage](https://api.codeclimate.com/v1/badges/a9fb9cae21beb6650c4f/test_coverage)](https://codeclimate.com/github/stephancom/qrinator/test_coverage) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) [![Deploy to Heroku](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy)
 > simple branded QR-codes
 
+Also available in Go: [qrinator.go](https://github.com/stephancom/qrinator.go) — a minimal port of the same idea.
+
 This implements a simple standalone service in rack to generate QR-codes with a logo in the center.
 
 It is designed to be easily deployed to Heroku, whose free hobby plan will suffice for many uses.  Many improvements and extensions could be made, such as configuration through a UI, etc, but the intent is to keep this simple.  Feel free to fork away.
