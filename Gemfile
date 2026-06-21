@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 ruby '3.4.2'
 
 gem 'bundler', '~> 2.6.2'
-gem 'rack', '~> 2.2.6.4'
+gem 'rack', '~> 2.2.23'
 gem 'redis', '~> 4.0.0'
 gem 'rqrcode', '~> 1.2'
 gem 'rqrcode_png', '~> 0.1.5'
